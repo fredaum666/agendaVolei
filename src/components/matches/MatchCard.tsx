@@ -40,7 +40,6 @@ export function MatchCard({ match }: MatchCardProps) {
         <Badge label={config?.shortName ?? displayName} category={category} />
         <div className="flex items-center gap-2">
           {isFinished ? (
-            /* Resultado oculto por padrão */
             <button
               onClick={() => setRevealed(r => !r)}
               className="flex items-center gap-1 text-xs font-semibold text-[#1A3A5C]/60 hover:text-[#1A3A5C] transition-colors"
@@ -49,7 +48,7 @@ export function MatchCard({ match }: MatchCardProps) {
               {revealed ? (
                 <>
                   <EyeOffIcon />
-                  <span className="font-black text-[#1A3A5C]">{finishedScore}</span>
+                  <span>ocultar</span>
                 </>
               ) : (
                 <>
@@ -85,9 +84,13 @@ export function MatchCard({ match }: MatchCardProps) {
           </div>
 
           {/* VS / Placar */}
-          <div className="flex-shrink-0 w-10 flex justify-center">
+          <div className="flex-shrink-0 flex items-center gap-1">
             {isFinished && revealed ? (
-              <span className="text-sm font-black text-[#1A3A5C]">{finishedScore}</span>
+              <>
+                <span className="text-xl font-black text-[#1A3A5C]">{match.sets.home}</span>
+                <span className="text-xs font-bold text-[#1A3A5C]/40 uppercase">vs</span>
+                <span className="text-xl font-black text-[#1A3A5C]">{match.sets.away}</span>
+              </>
             ) : (
               <span className="text-xs font-bold text-[#1A3A5C]/40 uppercase">vs</span>
             )}
