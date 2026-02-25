@@ -5,7 +5,7 @@
  * Deploy: https://workers.cloudflare.com (plano gratuito: 100k req/dia)
  */
 
-const SOFASCORE_BASE = 'https://api.sofascore.com'
+const SOFASCORE_BASE = 'https://www.sofascore.com'
 
 // Origens permitidas (adicione mais se necessário)
 const ALLOWED_ORIGINS = [
