@@ -20,7 +20,6 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        selfDestroying: true,
         includeAssets: ['volleyballIcon.png'],
         manifest: {
           name: 'Agenda Vôlei',
