@@ -52,7 +52,7 @@ async function fetchDay(dateString) {
 
   if (!res.ok) {
     console.warn(`  [${dateString}] HTTP ${res.status} — skipping`)
-    return []
+    return null // null = blocked, not just empty
   }
 
   const data = await res.json()
@@ -104,6 +104,7 @@ async function main() {
     console.log(`Fetching ${month} (${dayList.length} days)...`)
 
     const allEvents = []
+    let blockedCount = 0
 
     // Busca em paralelo com limite de 5 simultâneos para não sobrecarregar
     const CHUNK = 5
@@ -111,11 +112,20 @@ async function main() {
       const chunk = dayList.slice(i, i + CHUNK)
       const results = await Promise.allSettled(chunk.map(fetchDay))
       for (const r of results) {
-        if (r.status === 'fulfilled') allEvents.push(...r.value)
+        if (r.status === 'fulfilled') {
+          if (r.value === null) blockedCount++
+          else allEvents.push(...r.value)
+        }
       }
       if (i + CHUNK < dayList.length) {
         await new Promise(r => setTimeout(r, 300))
       }
+    }
+
+    // Se a maioria dos dias foi bloqueada, não sobrescreve o arquivo existente
+    if (blockedCount > dayList.length / 2) {
+      console.warn(`  ⚠ ${blockedCount}/${dayList.length} days blocked — skipping write for ${month}`)
+      continue
     }
 
     // Remove duplicatas por ID de evento
