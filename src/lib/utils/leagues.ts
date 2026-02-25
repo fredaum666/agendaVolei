@@ -26,6 +26,7 @@ interface TournamentConfig {
   displayName: string
   shortName: string
   category: LeagueCategory
+  seasonMonths: string // ex: "out – mai"
 }
 
 export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
@@ -33,81 +34,97 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     displayName: 'Superliga Masc.',
     shortName: 'Superliga Masc.',
     category: 'superliga-m',
+    seasonMonths: 'out – mai',
   },
   [SOFA_IDS.SUPERLIGA_F]: {
     displayName: 'Superliga Femn.',
     shortName: 'Superliga Femn.',
     category: 'superliga-f',
+    seasonMonths: 'out – mai',
   },
   [SOFA_IDS.COPA_BRASIL_M]: {
     displayName: 'Copa do Brasil Masc.',
     shortName: 'Copa Brasil Masc.',
     category: 'nacional',
+    seasonMonths: 'jan – mar',
   },
   [SOFA_IDS.COPA_BRASIL_F]: {
     displayName: 'Copa do Brasil Femn.',
     shortName: 'Copa Brasil Femn.',
     category: 'nacional',
+    seasonMonths: 'jan – fev',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_M]: {
     displayName: 'Campeonato Mineiro Masc.',
     shortName: 'Mineiro Masc.',
     category: 'estadual',
+    seasonMonths: 'set – nov',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_F]: {
     displayName: 'Campeonato Mineiro Femn.',
     shortName: 'Mineiro Femn.',
     category: 'estadual',
+    seasonMonths: 'set – nov',
   },
   [SOFA_IDS.VNL_M]: {
     displayName: 'Liga das Nações Masc.',
     shortName: 'Liga das Nações Masc.',
     category: 'internacional',
+    seasonMonths: 'jun – ago',
   },
   [SOFA_IDS.VNL_F]: {
     displayName: 'Liga das Nações Femn.',
     shortName: 'Liga das Nações Femn.',
     category: 'internacional',
+    seasonMonths: 'jun – ago',
   },
   [SOFA_IDS.WORLD_CHAMPIONSHIP_M]: {
     displayName: 'Campeonato Mundial Masc.',
     shortName: 'Campeonato Mundial Masc.',
     category: 'internacional',
+    seasonMonths: 'a cada 4 anos',
   },
   [SOFA_IDS.WORLD_CHAMPIONSHIP_F]: {
     displayName: 'Campeonato Mundial Femn.',
     shortName: 'Campeonato Mundial Femn.',
     category: 'internacional',
+    seasonMonths: 'a cada 4 anos',
   },
   [SOFA_IDS.PAN_AMERICAN_CUP_M]: {
     displayName: 'Copa Pan-Americana Masc.',
     shortName: 'Copa Pan-Americana Masc.',
     category: 'internacional',
+    seasonMonths: 'jun – jul',
   },
   [SOFA_IDS.PAN_AMERICAN_CUP_F]: {
     displayName: 'Copa Pan-Americana Femn.',
     shortName: 'Copa Pan-Americana Femn.',
     category: 'internacional',
+    seasonMonths: 'jun – jul',
   },
   [SOFA_IDS.OLYMPIC_GAMES_M]: {
     displayName: 'Jogos Olímpicos Masc.',
     shortName: 'Jogos Olímpicos Masc.',
     category: 'internacional',
+    seasonMonths: 'a cada 4 anos',
   },
   [SOFA_IDS.OLYMPIC_GAMES_F]: {
     displayName: 'Jogos Olímpicos Femn.',
     shortName: 'Jogos Olímpicos Femn.',
     category: 'internacional',
+    seasonMonths: 'a cada 4 anos',
   },
   [SOFA_IDS.CLUB_WORLD_M]: {
     displayName: 'Mundial de Clubes Masc.',
     shortName: 'Mundial de Clubes Masc.',
     category: 'internacional',
+    seasonMonths: 'nov – dez',
   },
   [SOFA_IDS.CLUB_WORLD_F]: {
     displayName: 'Mundial de Clubes Femn.',
     shortName: 'Mundial de Clubes Femn.',
     category: 'internacional',
+    seasonMonths: 'nov – dez',
   },
 }
 

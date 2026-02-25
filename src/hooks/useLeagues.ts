@@ -15,6 +15,7 @@ export function useLeagues() {
         ? 'Brazil'
         : 'World',
       season: 0,
+      seasonMonths: config.seasonMonths,
     }))
   }, [])
 

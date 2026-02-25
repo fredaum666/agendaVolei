@@ -13,5 +13,6 @@ export interface League {
   category: LeagueCategory
   country: string
   season: number
+  seasonMonths?: string
   logo?: string
 }

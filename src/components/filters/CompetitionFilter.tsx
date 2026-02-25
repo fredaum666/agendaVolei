@@ -212,6 +212,11 @@ export function CompetitionFilter({
                             aria-hidden
                           />
                           <span className="flex-1 text-left">{league.displayName}</span>
+                          {league.seasonMonths && (
+                            <span className="text-[11px] text-[#1A3A5C]/40 font-normal flex-shrink-0">
+                              {league.seasonMonths}
+                            </span>
+                          )}
                           {isSelected && <CheckIcon />}
                         </button>
                       )
