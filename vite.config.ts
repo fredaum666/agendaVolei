@@ -5,14 +5,16 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 export default defineConfig(({ mode }) => {
-  // loadEnv mantido para compatibilidade; SofaScore não precisa de chave
-  loadEnv(mode, process.cwd(), '')
+  const env = loadEnv(mode, process.cwd(), '')
 
   const isProd = mode === 'production'
   const base = isProd ? '/agendaVolei/' : '/'
 
   return {
     base,
+    define: isProd && env.VITE_PROXY_URL
+      ? { 'import.meta.env.VITE_PROXY_URL': JSON.stringify(env.VITE_PROXY_URL) }
+      : {},
     plugins: [
       react(),
       tailwindcss(),

@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_API_SPORTS_KEY: string
+  readonly VITE_PROXY_URL?: string
 }
 
 interface ImportMeta {
