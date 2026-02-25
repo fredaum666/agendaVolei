@@ -1,10 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { Match } from '@/types/match'
-import { fetchEventsByDate } from '@/lib/sofascore/client'
+import { fetchEventsForMonth } from '@/lib/sofascore/client'
 import { transformSofaEvent } from '@/lib/sofascore/transforms'
 import { buildCacheKey, readCache, writeCache } from '@/lib/cache/session-cache'
 import { formatDateKey, getYear, getMonth } from '@/lib/utils/date'
-import { getDaysInMonth, startOfMonth } from 'date-fns'
 
 export function useGames(currentMonth: Date, selectedLeagueId: number | null) {
   const [allGames, setAllGames] = useState<Match[]>([])
@@ -17,7 +16,7 @@ export function useGames(currentMonth: Date, selectedLeagueId: number | null) {
   useEffect(() => {
     async function fetchGames() {
       const cacheKey = buildCacheKey('sofagames', { year, month })
-      const cached = readCache<Match[]>(cacheKey, 'games')
+      const cached = readCache<Match[]>(cacheKey, 'sofagames')
       if (cached) {
         setAllGames(cached)
         return
@@ -27,26 +26,13 @@ export function useGames(currentMonth: Date, selectedLeagueId: number | null) {
       setError(null)
 
       try {
-        // Gera todas as datas do mês no formato yyyy-MM-dd
-        const daysInMonth = getDaysInMonth(startOfMonth(currentMonth))
-        const dates: string[] = Array.from({ length: daysInMonth }, (_, i) => {
-          const d = new Date(year, month, i + 1)
-          return formatDateKey(d)
-        })
+        const events = await fetchEventsForMonth(year, month)
 
-        // Busca todos os dias em paralelo
-        const results = await Promise.allSettled(
-          dates.map(date => fetchEventsByDate(date))
-        )
+        const games: Match[] = events
+          .map(transformSofaEvent)
+          .filter((m): m is Match => m !== null)
 
-        const games: Match[] = results.flatMap(result => {
-          if (result.status !== 'fulfilled') return []
-          return result.value.events
-            .map(transformSofaEvent)
-            .filter((m): m is Match => m !== null)
-        })
-
-        // Remove duplicatas (mesmo id pode aparecer em múltiplos dias por fuso)
+        // Remove duplicatas por id
         const seen = new Set<number>()
         const unique = games.filter(g => {
           if (seen.has(g.id)) return false
