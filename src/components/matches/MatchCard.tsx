@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Match } from '@/types/match'
 import { Badge } from '@/components/ui/Badge'
 import { TeamDisplay } from './TeamDisplay'
@@ -30,24 +31,44 @@ export function MatchCard({ match }: MatchCardProps) {
   const time = formatMatchTime(match.date)
   const score = getScoreDisplay(match)
   const isUpcoming = match.status.short === 'NS'
+  const isFinished = score?.isFinished ?? false
+
+  const [revealed, setRevealed] = useState(false)
 
   return (
     <article
       className="bg-white rounded-xl shadow-sm border border-[#E8C99A]/50 overflow-hidden hover:shadow-md transition-shadow"
       aria-label={`${match.teams.home.name} contra ${match.teams.away.name}`}
     >
-      {/* Header: badge da competição + horário */}
+      {/* Header: badge da competição + horário/resultado */}
       <div className={`flex items-center justify-between px-3 py-2 ${colors.bg}/10 border-b border-[#E8C99A]/40`}>
         <Badge label={config?.shortName ?? displayName} category={category} />
         <div className="flex items-center gap-2">
           {score ? (
-            <span
-              className={`text-xs font-bold ${
-                score.isLive ? 'text-red-600 animate-pulse' : 'text-[#1A3A5C]'
-              }`}
-            >
-              {score.text}
-            </span>
+            score.isLive ? (
+              <span className="text-xs font-bold text-red-600 animate-pulse">
+                {score.text}
+              </span>
+            ) : (
+              /* Resultado oculto por padrão */
+              <button
+                onClick={() => setRevealed(r => !r)}
+                className="flex items-center gap-1 text-xs font-semibold text-[#1A3A5C]/60 hover:text-[#1A3A5C] transition-colors"
+                aria-label={revealed ? 'Ocultar resultado' : 'Ver resultado'}
+              >
+                {revealed ? (
+                  <>
+                    <EyeOffIcon />
+                    <span className="font-black text-[#1A3A5C]">{score.text}</span>
+                  </>
+                ) : (
+                  <>
+                    <EyeIcon />
+                    <span>resultado</span>
+                  </>
+                )}
+              </button>
+            )
           ) : (
             isUpcoming && (
               <span className="text-xs font-semibold text-[#2C5F8A]">{time}</span>
@@ -76,10 +97,8 @@ export function MatchCard({ match }: MatchCardProps) {
 
           {/* VS / Placar */}
           <div className="flex-shrink-0 flex flex-col items-center">
-            {score && !score.isLive ? (
-              <span className="text-sm font-black text-[#1A3A5C]">
-                {score.text}
-              </span>
+            {isFinished && revealed ? (
+              <span className="text-sm font-black text-[#1A3A5C]">{score!.text}</span>
             ) : (
               <span className="text-xs font-bold text-[#1A3A5C]/40 uppercase">vs</span>
             )}
@@ -95,11 +114,30 @@ export function MatchCard({ match }: MatchCardProps) {
           </div>
         </div>
 
-        {/* Competição e temporada */}
+        {/* Competição */}
         <p className="mt-2 text-[10px] text-[#1A3A5C]/50 text-center truncate">
-          {displayName} — {match.league.season}
+          {displayName}
         </p>
       </div>
     </article>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  )
+}
+
+function EyeOffIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+      <line x1="1" y1="1" x2="23" y2="23"/>
+    </svg>
   )
 }
