@@ -51,7 +51,7 @@ export default defineConfig(({ mode }) => {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
           runtimeCaching: [
             {
-              urlPattern: /^https:\/\/api\.sofascore\.com\/.*/i,
+              urlPattern: /^https:\/\/www\.sofascore\.com\/.*/i,
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'sofascore-cache',
@@ -70,7 +70,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/sofascore': {
-          target: 'https://api.sofascore.com',
+          target: 'https://www.sofascore.com',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/sofascore/, ''),
           configure: (proxy) => {
