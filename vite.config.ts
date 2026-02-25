@@ -49,7 +49,8 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           cleanupOutdatedCaches: true,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          globPatterns: ['**/*.{js,css,ico,png,svg,woff2}'],
+          globIgnores: ['**/clear-sw.html'],
           navigateFallback: null,
         },
       }),
