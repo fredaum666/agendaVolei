@@ -1,18 +1,26 @@
 /**
  * Busca jogos de vôlei do SofaScore para os próximos 60 dias + 30 dias passados
  * e salva em public/data/games-YYYY-MM.json (um arquivo por mês).
+ * Também baixa logos dos times em public/logos/{id}.png.
  *
  * Rodado pelo GitHub Actions a cada hora.
  * Também pode ser rodado localmente: node scripts/fetch-games.mjs
  */
 
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const DATA_DIR = join(ROOT, 'public', 'data')
+const LOGOS_DIR = join(ROOT, 'public', 'logos')
+
+const HEADERS = {
+  'Accept': 'application/json',
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  'Referer': 'https://www.sofascore.com/',
+}
 
 // uniqueTournament IDs do SofaScore que nos interessam
 const TRACKED_IDS = new Set([
@@ -40,13 +48,7 @@ function monthKey(date) {
 
 async function fetchDay(dateString) {
   const url = `https://www.sofascore.com/api/v1/sport/volleyball/scheduled-events/${dateString}`
-  const res = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-      'Referer': 'https://www.sofascore.com/',
-    },
-  })
+  const res = await fetch(url, { headers: HEADERS })
 
   if (!res.ok) {
     console.warn(`  [${dateString}] HTTP ${res.status} — skipping`)
@@ -56,12 +58,27 @@ async function fetchDay(dateString) {
   const data = await res.json()
   const events = data.events ?? []
 
-  // Filtra apenas os torneios que nos interessam
   return events.filter(e => TRACKED_IDS.has(e.tournament?.uniqueTournament?.id))
+}
+
+async function downloadLogo(teamId) {
+  const outPath = join(LOGOS_DIR, `${teamId}.png`)
+  if (existsSync(outPath)) return // já existe, não baixa de novo
+
+  const url = `https://api.sofascore.com/api/v1/team/${teamId}/image`
+  try {
+    const res = await fetch(url, { headers: HEADERS })
+    if (!res.ok) return
+    const buffer = await res.arrayBuffer()
+    writeFileSync(outPath, Buffer.from(buffer))
+  } catch {
+    // ignora falhas de logo
+  }
 }
 
 async function main() {
   mkdirSync(DATA_DIR, { recursive: true })
+  mkdirSync(LOGOS_DIR, { recursive: true })
 
   const today = new Date()
   const dates = []
@@ -81,6 +98,8 @@ async function main() {
     byMonth[key].push(dateStr(d))
   }
 
+  const allTeamIds = new Set()
+
   for (const [month, dayList] of Object.entries(byMonth)) {
     console.log(`Fetching ${month} (${dayList.length} days)...`)
 
@@ -94,7 +113,6 @@ async function main() {
       for (const r of results) {
         if (r.status === 'fulfilled') allEvents.push(...r.value)
       }
-      // Pequena pausa entre chunks
       if (i + CHUNK < dayList.length) {
         await new Promise(r => setTimeout(r, 300))
       }
@@ -108,10 +126,29 @@ async function main() {
       return true
     })
 
+    // Coleta IDs de todos os times
+    for (const e of unique) {
+      if (e.homeTeam?.id) allTeamIds.add(e.homeTeam.id)
+      if (e.awayTeam?.id) allTeamIds.add(e.awayTeam.id)
+    }
+
     const outPath = join(DATA_DIR, `games-${month}.json`)
     writeFileSync(outPath, JSON.stringify({ updatedAt: new Date().toISOString(), events: unique }, null, 0))
     console.log(`  → ${unique.length} events saved to games-${month}.json`)
   }
+
+  // Baixa logos dos times (pula as que já existem)
+  console.log(`\nDownloading logos for ${allTeamIds.size} teams...`)
+  const teamIdList = [...allTeamIds]
+  const LOGO_CHUNK = 5
+  for (let i = 0; i < teamIdList.length; i += LOGO_CHUNK) {
+    const chunk = teamIdList.slice(i, i + LOGO_CHUNK)
+    await Promise.allSettled(chunk.map(downloadLogo))
+    if (i + LOGO_CHUNK < teamIdList.length) {
+      await new Promise(r => setTimeout(r, 200))
+    }
+  }
+  console.log(`  → logos saved to public/logos/`)
 
   console.log('Done.')
 }

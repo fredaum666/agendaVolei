@@ -26,7 +26,7 @@ export function transformSofaEvent(raw: SofaEvent): Match | null {
       home: {
         id: raw.homeTeam.id,
         name: raw.homeTeam.name,
-        logo: `https://api.sofascore.com/api/v1/team/${raw.homeTeam.id}/image`,
+        logo: `${import.meta.env.BASE_URL}logos/${raw.homeTeam.id}.png`,
         country: raw.homeTeam.country
           ? { name: raw.homeTeam.country.name, code: raw.homeTeam.country.alpha2 }
           : undefined,
@@ -34,7 +34,7 @@ export function transformSofaEvent(raw: SofaEvent): Match | null {
       away: {
         id: raw.awayTeam.id,
         name: raw.awayTeam.name,
-        logo: `https://api.sofascore.com/api/v1/team/${raw.awayTeam.id}/image`,
+        logo: `${import.meta.env.BASE_URL}logos/${raw.awayTeam.id}.png`,
         country: raw.awayTeam.country
           ? { name: raw.awayTeam.country.name, code: raw.awayTeam.country.alpha2 }
           : undefined,
