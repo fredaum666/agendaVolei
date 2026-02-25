@@ -74,18 +74,18 @@ export function MatchCard({ match }: MatchCardProps) {
 
       {/* Times */}
       <div className="px-3 py-3">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-center gap-3">
           {/* Time da casa */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex justify-end">
             <TeamDisplay
               team={match.teams.home}
               leagueId={match.league.id}
-              align="left"
+              align="right"
             />
           </div>
 
           {/* VS / Placar */}
-          <div className="flex-shrink-0 flex flex-col items-center">
+          <div className="flex-shrink-0 w-10 flex justify-center">
             {isFinished && revealed ? (
               <span className="text-sm font-black text-[#1A3A5C]">{finishedScore}</span>
             ) : (
@@ -94,11 +94,11 @@ export function MatchCard({ match }: MatchCardProps) {
           </div>
 
           {/* Time visitante */}
-          <div className="flex-1 min-w-0 flex justify-end">
+          <div className="flex-1 min-w-0">
             <TeamDisplay
               team={match.teams.away}
               leagueId={match.league.id}
-              align="right"
+              align="left"
             />
           </div>
         </div>
