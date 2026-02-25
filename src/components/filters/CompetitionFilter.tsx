@@ -20,7 +20,7 @@ const CATEGORY_ORDER: LeagueCategory[] = [
 const CATEGORY_LABELS: Record<LeagueCategory, string> = {
   'superliga-m': 'Superliga',
   'superliga-f': 'Superliga',
-  'nacional': 'Seleções',
+  'nacional': 'Nacional',
   'internacional': 'Internacional',
   'estadual': 'Estadual',
 }

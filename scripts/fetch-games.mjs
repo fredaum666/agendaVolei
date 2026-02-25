@@ -24,18 +24,22 @@ const HEADERS = {
 
 // uniqueTournament IDs do SofaScore que nos interessam
 const TRACKED_IDS = new Set([
-  1452, // Superliga Masc.
-  1468, // Superliga Femn.
+  1452,  // Superliga Masc.
+  1468,  // Superliga Femn.
+  16600, // Copa do Brasil Masc.
+  21916, // Copa do Brasil Femn.
+  23389, // Campeonato Mineiro Masc.
+  29828, // Campeonato Mineiro Femn.
   11093, // VNL Masc.
   11094, // VNL Femn.
-  33,   // Mundial Masc.
-  34,   // Mundial Femn.
-  327,  // Copa Pan-Americana Masc.
-  328,  // Copa Pan-Americana Femn.
-  41,   // Olímpicos Masc.
-  42,   // Olímpicos Femn.
-  307,  // Mundial Clubes Masc.
-  308,  // Mundial Clubes Femn.
+  33,    // Mundial Masc.
+  34,    // Mundial Femn.
+  327,   // Copa Pan-Americana Masc.
+  328,   // Copa Pan-Americana Femn.
+  41,    // Olímpicos Masc.
+  42,    // Olímpicos Femn.
+  307,   // Mundial Clubes Masc.
+  308,   // Mundial Clubes Femn.
 ])
 
 function dateStr(date) {

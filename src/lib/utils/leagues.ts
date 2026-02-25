@@ -4,6 +4,10 @@ import type { LeagueCategory } from '@/types/competition'
 export const SOFA_IDS = {
   SUPERLIGA_M: 1452,
   SUPERLIGA_F: 1468,
+  COPA_BRASIL_M: 16600,
+  COPA_BRASIL_F: 21916,
+  CAMPEONATO_MINEIRO_M: 23389,
+  CAMPEONATO_MINEIRO_F: 29828,
   VNL_M: 11093,
   VNL_F: 11094,
   WORLD_CHAMPIONSHIP_M: 33,
@@ -34,6 +38,26 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     displayName: 'Superliga Femn.',
     shortName: 'Superliga Femn.',
     category: 'superliga-f',
+  },
+  [SOFA_IDS.COPA_BRASIL_M]: {
+    displayName: 'Copa do Brasil Masc.',
+    shortName: 'Copa Brasil Masc.',
+    category: 'nacional',
+  },
+  [SOFA_IDS.COPA_BRASIL_F]: {
+    displayName: 'Copa do Brasil Femn.',
+    shortName: 'Copa Brasil Femn.',
+    category: 'nacional',
+  },
+  [SOFA_IDS.CAMPEONATO_MINEIRO_M]: {
+    displayName: 'Campeonato Mineiro Masc.',
+    shortName: 'Mineiro Masc.',
+    category: 'estadual',
+  },
+  [SOFA_IDS.CAMPEONATO_MINEIRO_F]: {
+    displayName: 'Campeonato Mineiro Femn.',
+    shortName: 'Mineiro Femn.',
+    category: 'estadual',
   },
   [SOFA_IDS.VNL_M]: {
     displayName: 'Liga das Nações Masc.',
