@@ -32,13 +32,13 @@ export default defineConfig(({ mode }) => {
           lang: 'pt-BR',
           icons: [
             {
-              src: '/volleyballIcon.png',
+              src: `${base}volleyballIcon.png`,
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any maskable',
             },
             {
-              src: '/volleyballIcon.png',
+              src: `${base}volleyballIcon.png`,
               sizes: '192x192',
               type: 'image/png',
               purpose: 'any',
