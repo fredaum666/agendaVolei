@@ -3,14 +3,15 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-// Desregistra SWs antigos que cachearam manifest com paths errados
+// Desregistra todos os SWs e limpa caches para garantir versão atualizada
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(registrations => {
     for (const reg of registrations) {
-      if (reg.scope && !reg.scope.includes('/agendaVolei/')) {
-        reg.unregister()
-      }
+      reg.unregister()
     }
+  })
+  caches.keys().then(keys => {
+    for (const key of keys) caches.delete(key)
   })
 }
 
