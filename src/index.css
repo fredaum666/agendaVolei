@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-court-sand: #F5E6C8;
+  --color-court-clay: #E8C99A;
+  --color-court-white: #FFFFFF;
+
+  --color-net-blue: #1A3A5C;
+  --color-net-steel: #2C5F8A;
+  --color-net-sky: #4A9CC7;
+  --color-net-light: #EBF4FA;
+
+  --color-ball-yellow: #FFD700;
+  --color-ball-orange: #F4843D;
+
+  --color-league-superliga-m: #1A3A5C;
+  --color-league-superliga-f: #8B1A6B;
+  --color-league-nacional: #1A6B1A;
+  --color-league-internacional: #B8860B;
+  --color-league-estadual: #6B3A1A;
+
+  --font-sans: Inter, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-court-sand);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar customizado para filtros */
+.filter-scroll::-webkit-scrollbar {
+  height: 0;
+}
