@@ -2,22 +2,17 @@ import { useState } from 'react'
 import type { Match } from '@/types/match'
 import { Badge } from '@/components/ui/Badge'
 import { TeamDisplay } from './TeamDisplay'
-import { formatMatchTime, formatMatchStatus } from '@/lib/utils/date'
+import { formatMatchTime } from '@/lib/utils/date'
 import { SOFA_TOURNAMENT_CONFIG, CATEGORY_COLORS } from '@/lib/utils/leagues'
 
 interface MatchCardProps {
   match: Match
 }
 
-function getScoreDisplay(match: Match) {
+function getFinishedScore(match: Match): string | null {
   const isFinished = match.status.short === 'FT' || match.status.short === 'AWD'
-  const isLive = match.status.short === 'LIVE' || match.status.short.startsWith('Q')
-
   if (isFinished && match.sets.home !== null && match.sets.away !== null) {
-    return { text: `${match.sets.home}–${match.sets.away}`, isLive: false, isFinished: true }
-  }
-  if (isLive) {
-    return { text: formatMatchStatus(match.status.short), isLive: true, isFinished: false }
+    return `${match.sets.home}–${match.sets.away}`
   }
   return null
 }
@@ -29,9 +24,9 @@ export function MatchCard({ match }: MatchCardProps) {
   const colors = CATEGORY_COLORS[category]
 
   const time = formatMatchTime(match.date)
-  const score = getScoreDisplay(match)
-  const isUpcoming = match.status.short === 'NS'
-  const isFinished = score?.isFinished ?? false
+  const finishedScore = getFinishedScore(match)
+  const isFinished = finishedScore !== null
+  const isUpcoming = !isFinished
 
   const [revealed, setRevealed] = useState(false)
 
@@ -44,31 +39,25 @@ export function MatchCard({ match }: MatchCardProps) {
       <div className={`flex items-center justify-between px-3 py-2 ${colors.bg}/10 border-b border-[#E8C99A]/40`}>
         <Badge label={config?.shortName ?? displayName} category={category} />
         <div className="flex items-center gap-2">
-          {score ? (
-            score.isLive ? (
-              <span className="text-xs font-bold text-red-600 animate-pulse">
-                {score.text}
-              </span>
-            ) : (
-              /* Resultado oculto por padrão */
-              <button
-                onClick={() => setRevealed(r => !r)}
-                className="flex items-center gap-1 text-xs font-semibold text-[#1A3A5C]/60 hover:text-[#1A3A5C] transition-colors"
-                aria-label={revealed ? 'Ocultar resultado' : 'Ver resultado'}
-              >
-                {revealed ? (
-                  <>
-                    <EyeOffIcon />
-                    <span className="font-black text-[#1A3A5C]">{score.text}</span>
-                  </>
-                ) : (
-                  <>
-                    <EyeIcon />
-                    <span>resultado</span>
-                  </>
-                )}
-              </button>
-            )
+          {isFinished ? (
+            /* Resultado oculto por padrão */
+            <button
+              onClick={() => setRevealed(r => !r)}
+              className="flex items-center gap-1 text-xs font-semibold text-[#1A3A5C]/60 hover:text-[#1A3A5C] transition-colors"
+              aria-label={revealed ? 'Ocultar resultado' : 'Ver resultado'}
+            >
+              {revealed ? (
+                <>
+                  <EyeOffIcon />
+                  <span className="font-black text-[#1A3A5C]">{finishedScore}</span>
+                </>
+              ) : (
+                <>
+                  <EyeIcon />
+                  <span>resultado</span>
+                </>
+              )}
+            </button>
           ) : (
             isUpcoming && (
               <span className="text-xs font-semibold text-[#2C5F8A]">{time}</span>
@@ -98,7 +87,7 @@ export function MatchCard({ match }: MatchCardProps) {
           {/* VS / Placar */}
           <div className="flex-shrink-0 flex flex-col items-center">
             {isFinished && revealed ? (
-              <span className="text-sm font-black text-[#1A3A5C]">{score!.text}</span>
+              <span className="text-sm font-black text-[#1A3A5C]">{finishedScore}</span>
             ) : (
               <span className="text-xs font-bold text-[#1A3A5C]/40 uppercase">vs</span>
             )}
