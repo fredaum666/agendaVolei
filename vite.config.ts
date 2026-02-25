@@ -48,17 +48,9 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
+          cleanupOutdatedCaches: true,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/www\.sofascore\.com\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'sofascore-cache',
-                expiration: { maxEntries: 100, maxAgeSeconds: 3600 },
-              },
-            },
-          ],
+          navigateFallback: null,
         },
       }),
     ],
