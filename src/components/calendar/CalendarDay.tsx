@@ -42,9 +42,6 @@ export function CalendarDay({
     ? 'text-sm font-medium text-[#1A3A5C]'
     : 'text-sm font-normal text-[#1A3A5C]/50'
 
-  // Máximo 3 badges para não sobrecarregar a célula
-  const visibleTournaments = tournamentIds.slice(0, 3)
-
   return (
     <button
       onClick={onClick}
@@ -55,9 +52,9 @@ export function CalendarDay({
     >
       <span className={numberClass}>{dayNumber}</span>
 
-      {visibleTournaments.length > 0 && (
+      {tournamentIds.length > 0 && (
         <div className="flex flex-col items-center gap-[2px] mt-1 w-full px-1">
-          {visibleTournaments.map(tid => {
+          {tournamentIds.map(tid => {
             const colors = getTournamentBadgeColors(tid)
             if (!colors) return null
             return (
