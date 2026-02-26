@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import type { League, LeagueCategory } from '@/types/competition'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { SOFA_TOURNAMENT_CONFIG } from '@/lib/utils/leagues'
 
 interface CompetitionFilterProps {
   leagues: League[]
@@ -25,13 +26,6 @@ const CATEGORY_LABELS: Record<LeagueCategory, string> = {
   'estadual': 'Estadual',
 }
 
-const CATEGORY_DOT: Record<LeagueCategory, string> = {
-  'superliga-m': 'bg-[#1A3A5C]',
-  'superliga-f': 'bg-[#8B1A6B]',
-  'nacional': 'bg-[#1A6B1A]',
-  'internacional': 'bg-[#B8860B]',
-  'estadual': 'bg-[#6B3A1A]',
-}
 
 function sortLeagues(leagues: League[]): League[] {
   return [...leagues].sort((a, b) => {
@@ -94,8 +88,8 @@ export function CompetitionFilter({
   }
 
   return (
-    <div className="bg-[#1A3A5C]/5 border-b border-[#1A3A5C]/10 px-3 py-2 relative" ref={wrapperRef}>
-      <div className="max-w-2xl mx-auto">
+    <div className="bg-[#1A3A5C]/5 border-b border-[#1A3A5C]/10 py-2">
+      <div className="max-w-2xl mx-auto px-3 relative" ref={wrapperRef}>
         {/* Botão trigger */}
         <button
           onClick={() => setOpen(v => !v)}
@@ -110,9 +104,12 @@ export function CompetitionFilter({
               <LoadingSpinner size="sm" />
             ) : (
               <span
-                className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
-                  selectedLeague ? CATEGORY_DOT[selectedLeague.category] : 'bg-[#1A3A5C]'
-                }`}
+                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                style={{
+                  backgroundColor: selectedLeague
+                    ? SOFA_TOURNAMENT_CONFIG[selectedLeague.id]?.color ?? '#1A3A5C'
+                    : '#1A3A5C',
+                }}
                 aria-hidden
               />
             )}
@@ -195,29 +192,36 @@ export function CompetitionFilter({
                     {/* Itens */}
                     {group.items.map(league => {
                       const isSelected = selectedLeagueId === league.id
+                      const tournamentColor = SOFA_TOURNAMENT_CONFIG[league.id]?.color
                       return (
                         <button
                           key={league.id}
                           role="option"
                           aria-selected={isSelected}
                           onClick={() => handleSelect(league.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm transition-colors ${
-                            isSelected
-                              ? 'bg-[#EBF4FA] text-[#1A3A5C] font-semibold'
-                              : 'text-[#1A3A5C]/80 hover:bg-[#F5F9FC] active:bg-[#EBF4FA] font-medium'
-                          }`}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm transition-all font-medium"
+                          style={
+                            tournamentColor
+                              ? {
+                                  backgroundColor: isSelected
+                                    ? tournamentColor
+                                    : `${tournamentColor}55`,
+                                  color: isSelected ? '#fff' : '#1A3A5C',
+                                  borderLeft: `3px solid ${tournamentColor}`,
+                                }
+                              : {}
+                          }
                         >
-                          <span
-                            className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${CATEGORY_DOT[league.category]}`}
-                            aria-hidden
-                          />
-                          <span className="flex-1 text-left">{league.displayName}</span>
+                          <span className="flex-1 text-left font-semibold">{league.displayName}</span>
                           {league.seasonMonths && (
-                            <span className="text-[11px] text-[#1A3A5C]/40 font-normal flex-shrink-0">
+                            <span
+                              className="text-[11px] font-normal flex-shrink-0"
+                              style={{ opacity: isSelected ? 0.75 : 0.5 }}
+                            >
                               {league.seasonMonths}
                             </span>
                           )}
-                          {isSelected && <CheckIcon />}
+                          {isSelected && <CheckIcon light />}
                         </button>
                       )
                     })}

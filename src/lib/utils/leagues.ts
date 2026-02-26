@@ -43,7 +43,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Superliga Masc.',
     category: 'superliga-m',
     seasonMonths: 'out – mai',
-    color: '#00A651', // verde Superliga
+    color: '#00C45A', // verde Superliga
     gender: 'M',
   },
   [SOFA_IDS.SUPERLIGA_F]: {
@@ -51,7 +51,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Superliga Femn.',
     category: 'superliga-f',
     seasonMonths: 'out – mai',
-    color: '#00A651', // verde Superliga
+    color: '#00C45A', // verde Superliga
     gender: 'F',
   },
   [SOFA_IDS.COPA_BRASIL_M]: {
@@ -59,7 +59,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Copa Brasil Masc.',
     category: 'nacional',
     seasonMonths: 'jan – mar',
-    color: '#F5D000', // amarelo Copa Brasil
+    color: '#F7C200', // amarelo Copa Brasil
     gender: 'M',
   },
   [SOFA_IDS.COPA_BRASIL_F]: {
@@ -67,7 +67,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Copa Brasil Femn.',
     category: 'nacional',
     seasonMonths: 'jan – fev',
-    color: '#F5D000', // amarelo Copa Brasil
+    color: '#F7C200', // amarelo Copa Brasil
     gender: 'F',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_M]: {
@@ -75,7 +75,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Mineiro Masc.',
     category: 'estadual',
     seasonMonths: 'set – nov',
-    color: '#C8102E', // vermelho Minas
+    color: '#E8001E', // vermelho Minas
     gender: 'M',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_F]: {
@@ -83,7 +83,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Mineiro Femn.',
     category: 'estadual',
     seasonMonths: 'set – nov',
-    color: '#C8102E', // vermelho Minas
+    color: '#E8001E', // vermelho Minas
     gender: 'F',
   },
   [SOFA_IDS.VNL_M]: {
@@ -107,7 +107,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Campeonato Mundial Masc.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
-    color: '#B8860B', // dourado Mundial
+    color: '#0077B6', // azul FIVB Mundial
     gender: 'M',
   },
   [SOFA_IDS.WORLD_CHAMPIONSHIP_F]: {
@@ -115,7 +115,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Campeonato Mundial Femn.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
-    color: '#B8860B', // dourado Mundial
+    color: '#0077B6', // azul FIVB Mundial
     gender: 'F',
   },
   [SOFA_IDS.PAN_AMERICAN_CUP_M]: {
@@ -139,7 +139,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Jogos Olímpicos Masc.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
-    color: '#D4A017', // dourado olímpico
+    color: '#C8961A', // dourado olímpico
     gender: 'M',
   },
   [SOFA_IDS.OLYMPIC_GAMES_F]: {
@@ -147,7 +147,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Jogos Olímpicos Femn.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
-    color: '#D4A017', // dourado olímpico
+    color: '#C8961A', // dourado olímpico
     gender: 'F',
   },
   [SOFA_IDS.CLUB_WORLD_M]: {
@@ -155,7 +155,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Mundial de Clubes Masc.',
     category: 'internacional',
     seasonMonths: 'nov – dez',
-    color: '#6A0DAD', // roxo Mundial Clubes
+    color: '#455A64', // cinza azulado escuro Mundial Clubes
     gender: 'M',
   },
   [SOFA_IDS.CLUB_WORLD_F]: {
@@ -163,7 +163,7 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Mundial de Clubes Femn.',
     category: 'internacional',
     seasonMonths: 'nov – dez',
-    color: '#6A0DAD', // roxo Mundial Clubes
+    color: '#455A64', // cinza azulado escuro Mundial Clubes
     gender: 'F',
   },
 }

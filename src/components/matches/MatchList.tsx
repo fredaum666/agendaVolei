@@ -23,7 +23,6 @@ export function MatchList({
   if (!selectedDay) {
     return (
       <div className="flex flex-col items-center gap-3 py-12 px-4 text-center">
-        <span className="text-5xl" aria-hidden>📅</span>
         <p className="text-sm font-medium text-[#1A3A5C]/50">
           Selecione um dia no calendário para ver os jogos
         </p>

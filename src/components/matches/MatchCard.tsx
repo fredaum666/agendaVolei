@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { Match } from '@/types/match'
-import { Badge } from '@/components/ui/Badge'
 import { TeamDisplay } from './TeamDisplay'
 import { formatMatchTime } from '@/lib/utils/date'
-import { SOFA_TOURNAMENT_CONFIG, CATEGORY_COLORS } from '@/lib/utils/leagues'
+import { SOFA_TOURNAMENT_CONFIG, GENDER_COLOR } from '@/lib/utils/leagues'
 
 interface MatchCardProps {
   match: Match
@@ -19,9 +18,10 @@ function getFinishedScore(match: Match): string | null {
 
 export function MatchCard({ match }: MatchCardProps) {
   const config = SOFA_TOURNAMENT_CONFIG[match.league.id]
-  const category = config?.category ?? 'internacional'
   const displayName = config?.displayName ?? match.league.name
-  const colors = CATEGORY_COLORS[category]
+  const tournamentColor = config?.color ?? '#1A3A5C'
+  const genderColor = config ? GENDER_COLOR[config.gender] : '#1A3A5C'
+  const genderLabel = config?.gender === 'M' ? 'Masc.' : config?.gender === 'F' ? 'Femn.' : null
 
   const time = formatMatchTime(match.date)
   const finishedScore = getFinishedScore(match)
@@ -36,8 +36,26 @@ export function MatchCard({ match }: MatchCardProps) {
       aria-label={`${match.teams.home.name} contra ${match.teams.away.name}`}
     >
       {/* Header: badge da competição + horário/resultado */}
-      <div className={`flex items-center justify-between px-3 py-2 ${colors.bg}/10 border-b border-[#E8C99A]/40`}>
-        <Badge label={config?.shortName ?? displayName} category={category} />
+      <div
+        className="flex items-center justify-between px-3 py-2 border-b border-[#E8C99A]/40"
+        style={{ backgroundColor: `${tournamentColor}18` }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span
+            className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider leading-none text-white"
+            style={{ backgroundColor: tournamentColor }}
+          >
+            {config?.shortName ?? displayName}
+          </span>
+          {genderLabel && (
+            <span
+              className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider leading-none text-white"
+              style={{ backgroundColor: genderColor }}
+            >
+              {genderLabel}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {isFinished ? (
             <button
