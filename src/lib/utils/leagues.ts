@@ -22,11 +22,19 @@ export const SOFA_IDS = {
 
 export const TRACKED_SOFA_IDS: ReadonlySet<number> = new Set(Object.values(SOFA_IDS))
 
+// Cor de gênero — azul para Masc, roxo para Femn
+export const GENDER_COLOR: Record<'M' | 'F', string> = {
+  M: '#1A6BE8',
+  F: '#9B1AE8',
+}
+
 interface TournamentConfig {
   displayName: string
   shortName: string
   category: LeagueCategory
   seasonMonths: string // ex: "out – mai"
+  color: string        // cor de identidade do torneio (Superliga = verde, VNL = laranja, etc.)
+  gender: 'M' | 'F'
 }
 
 export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
@@ -35,125 +43,157 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     shortName: 'Superliga Masc.',
     category: 'superliga-m',
     seasonMonths: 'out – mai',
+    color: '#00A651', // verde Superliga
+    gender: 'M',
   },
   [SOFA_IDS.SUPERLIGA_F]: {
     displayName: 'Superliga Femn.',
     shortName: 'Superliga Femn.',
     category: 'superliga-f',
     seasonMonths: 'out – mai',
+    color: '#00A651', // verde Superliga
+    gender: 'F',
   },
   [SOFA_IDS.COPA_BRASIL_M]: {
     displayName: 'Copa do Brasil Masc.',
     shortName: 'Copa Brasil Masc.',
     category: 'nacional',
     seasonMonths: 'jan – mar',
+    color: '#F5D000', // amarelo Copa Brasil
+    gender: 'M',
   },
   [SOFA_IDS.COPA_BRASIL_F]: {
     displayName: 'Copa do Brasil Femn.',
     shortName: 'Copa Brasil Femn.',
     category: 'nacional',
     seasonMonths: 'jan – fev',
+    color: '#F5D000', // amarelo Copa Brasil
+    gender: 'F',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_M]: {
     displayName: 'Campeonato Mineiro Masc.',
     shortName: 'Mineiro Masc.',
     category: 'estadual',
     seasonMonths: 'set – nov',
+    color: '#C8102E', // vermelho Minas
+    gender: 'M',
   },
   [SOFA_IDS.CAMPEONATO_MINEIRO_F]: {
     displayName: 'Campeonato Mineiro Femn.',
     shortName: 'Mineiro Femn.',
     category: 'estadual',
     seasonMonths: 'set – nov',
+    color: '#C8102E', // vermelho Minas
+    gender: 'F',
   },
   [SOFA_IDS.VNL_M]: {
     displayName: 'Liga das Nações Masc.',
     shortName: 'Liga das Nações Masc.',
     category: 'internacional',
     seasonMonths: 'jun – ago',
+    color: '#FF6B00', // laranja VNL
+    gender: 'M',
   },
   [SOFA_IDS.VNL_F]: {
     displayName: 'Liga das Nações Femn.',
     shortName: 'Liga das Nações Femn.',
     category: 'internacional',
     seasonMonths: 'jun – ago',
+    color: '#FF6B00', // laranja VNL
+    gender: 'F',
   },
   [SOFA_IDS.WORLD_CHAMPIONSHIP_M]: {
     displayName: 'Campeonato Mundial Masc.',
     shortName: 'Campeonato Mundial Masc.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
+    color: '#B8860B', // dourado Mundial
+    gender: 'M',
   },
   [SOFA_IDS.WORLD_CHAMPIONSHIP_F]: {
     displayName: 'Campeonato Mundial Femn.',
     shortName: 'Campeonato Mundial Femn.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
+    color: '#B8860B', // dourado Mundial
+    gender: 'F',
   },
   [SOFA_IDS.PAN_AMERICAN_CUP_M]: {
     displayName: 'Copa Pan-Americana Masc.',
     shortName: 'Copa Pan-Americana Masc.',
     category: 'internacional',
     seasonMonths: 'jun – jul',
+    color: '#00A3E0', // azul claro Pan-Am
+    gender: 'M',
   },
   [SOFA_IDS.PAN_AMERICAN_CUP_F]: {
     displayName: 'Copa Pan-Americana Femn.',
     shortName: 'Copa Pan-Americana Femn.',
     category: 'internacional',
     seasonMonths: 'jun – jul',
+    color: '#00A3E0', // azul claro Pan-Am
+    gender: 'F',
   },
   [SOFA_IDS.OLYMPIC_GAMES_M]: {
     displayName: 'Jogos Olímpicos Masc.',
     shortName: 'Jogos Olímpicos Masc.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
+    color: '#D4A017', // dourado olímpico
+    gender: 'M',
   },
   [SOFA_IDS.OLYMPIC_GAMES_F]: {
     displayName: 'Jogos Olímpicos Femn.',
     shortName: 'Jogos Olímpicos Femn.',
     category: 'internacional',
     seasonMonths: 'a cada 4 anos',
+    color: '#D4A017', // dourado olímpico
+    gender: 'F',
   },
   [SOFA_IDS.CLUB_WORLD_M]: {
     displayName: 'Mundial de Clubes Masc.',
     shortName: 'Mundial de Clubes Masc.',
     category: 'internacional',
     seasonMonths: 'nov – dez',
+    color: '#6A0DAD', // roxo Mundial Clubes
+    gender: 'M',
   },
   [SOFA_IDS.CLUB_WORLD_F]: {
     displayName: 'Mundial de Clubes Femn.',
     shortName: 'Mundial de Clubes Femn.',
     category: 'internacional',
     seasonMonths: 'nov – dez',
+    color: '#6A0DAD', // roxo Mundial Clubes
+    gender: 'F',
   },
 }
 
-// Cores por categoria para badges e indicadores visuais
+// Cores por categoria para badges de texto (MatchCard)
 export const CATEGORY_COLORS: Record<LeagueCategory, { bg: string; text: string; border: string }> = {
   'superliga-m': {
-    bg: 'bg-[#1A3A5C]',
+    bg: 'bg-[#00A651]',
     text: 'text-white',
-    border: 'border-[#1A3A5C]',
+    border: 'border-[#00A651]',
   },
   'superliga-f': {
-    bg: 'bg-[#8B1A6B]',
+    bg: 'bg-[#00A651]',
     text: 'text-white',
-    border: 'border-[#8B1A6B]',
+    border: 'border-[#00A651]',
   },
   'nacional': {
-    bg: 'bg-[#1A6B1A]',
-    text: 'text-white',
-    border: 'border-[#1A6B1A]',
+    bg: 'bg-[#F5D000]',
+    text: 'text-[#1A3A5C]',
+    border: 'border-[#F5D000]',
   },
   'internacional': {
-    bg: 'bg-[#B8860B]',
+    bg: 'bg-[#FF6B00]',
     text: 'text-white',
-    border: 'border-[#B8860B]',
+    border: 'border-[#FF6B00]',
   },
   'estadual': {
-    bg: 'bg-[#6B3A1A]',
+    bg: 'bg-[#C8102E]',
     text: 'text-white',
-    border: 'border-[#6B3A1A]',
+    border: 'border-[#C8102E]',
   },
 }
 
@@ -171,4 +211,14 @@ export const NATIONAL_TEAM_TOURNAMENT_IDS: ReadonlySet<number> = new Set<number>
 
 export function isNationalTeamLeague(leagueId: number): boolean {
   return NATIONAL_TEAM_TOURNAMENT_IDS.has(leagueId)
+}
+
+// Helper: retorna as duas cores do badge bicolor de um torneio
+export function getTournamentBadgeColors(leagueId: number): { tournamentColor: string; genderColor: string } | null {
+  const config = SOFA_TOURNAMENT_CONFIG[leagueId]
+  if (!config) return null
+  return {
+    tournamentColor: config.color,
+    genderColor: GENDER_COLOR[config.gender],
+  }
 }

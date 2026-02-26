@@ -60,12 +60,26 @@ export function useGames(currentMonth: Date, selectedLeagueId: number | null) {
     return allGames.filter(g => g.league.id === selectedLeagueId)
   }, [allGames, selectedLeagueId])
 
-  // Contagem de jogos por dia para o grid do calendário
+  // Contagem de jogos por dia (mantida para compatibilidade)
   const matchCountsByDay = useMemo<Record<string, number>>(() => {
     return filteredGames.reduce<Record<string, number>>((acc, game) => {
       try {
         const key = formatDateKey(new Date(game.timestamp * 1000))
         acc[key] = (acc[key] ?? 0) + 1
+      } catch {
+        // data inválida — ignora
+      }
+      return acc
+    }, {})
+  }, [filteredGames])
+
+  // IDs de torneios únicos por dia (para badges visuais no calendário)
+  const tournamentsByDay = useMemo<Record<string, number[]>>(() => {
+    return filteredGames.reduce<Record<string, number[]>>((acc, game) => {
+      try {
+        const key = formatDateKey(new Date(game.timestamp * 1000))
+        if (!acc[key]) acc[key] = []
+        if (!acc[key].includes(game.league.id)) acc[key].push(game.league.id)
       } catch {
         // data inválida — ignora
       }
@@ -88,5 +102,5 @@ export function useGames(currentMonth: Date, selectedLeagueId: number | null) {
       .sort((a, b) => a.timestamp - b.timestamp)
   }
 
-  return { filteredGames, matchCountsByDay, isLoading, error, getGamesForDay }
+  return { filteredGames, matchCountsByDay, tournamentsByDay, isLoading, error, getGamesForDay }
 }

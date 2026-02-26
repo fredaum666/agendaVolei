@@ -6,6 +6,7 @@ interface CalendarGridProps {
   currentMonth: Date
   selectedDay: Date | null
   matchCountsByDay: Record<string, number>
+  tournamentsByDay: Record<string, number[]>
   onDaySelect: (day: Date) => void
 }
 
@@ -13,6 +14,7 @@ export function CalendarGrid({
   currentMonth,
   selectedDay,
   matchCountsByDay,
+  tournamentsByDay,
   onDaySelect,
 }: CalendarGridProps) {
   const { calendarDays } = useCalendar({ currentMonth, selectedDay, matchCountsByDay })
@@ -29,6 +31,7 @@ export function CalendarGrid({
             isToday={day.isToday}
             isSelected={day.isSelected}
             matchCount={day.matchCount}
+            tournamentIds={tournamentsByDay[day.dateKey] ?? []}
             onClick={() => onDaySelect(day.date)}
           />
         ))}

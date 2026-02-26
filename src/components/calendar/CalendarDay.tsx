@@ -1,4 +1,5 @@
 import { getDate } from 'date-fns'
+import { getTournamentBadgeColors } from '@/lib/utils/leagues'
 
 interface CalendarDayProps {
   date: Date
@@ -6,6 +7,7 @@ interface CalendarDayProps {
   isToday: boolean
   isSelected: boolean
   matchCount: number
+  tournamentIds: number[]
   onClick: () => void
 }
 
@@ -15,11 +17,12 @@ export function CalendarDay({
   isToday,
   isSelected,
   matchCount,
+  tournamentIds,
   onClick,
 }: CalendarDayProps) {
   const dayNumber = getDate(date)
 
-  let cellClass = 'relative flex flex-col items-center justify-start pt-1.5 pb-2 min-h-[44px] rounded-lg cursor-pointer transition-all duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9CC7] focus-visible:ring-offset-1 touch-manipulation'
+  let cellClass = 'relative flex flex-col items-center justify-start pt-1.5 pb-2 min-h-[52px] rounded-lg cursor-pointer transition-all duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9CC7] focus-visible:ring-offset-1 touch-manipulation'
 
   if (isSelected) {
     cellClass += ' bg-[#1A3A5C] shadow-md'
@@ -39,6 +42,9 @@ export function CalendarDay({
     ? 'text-sm font-medium text-[#1A3A5C]'
     : 'text-sm font-normal text-[#1A3A5C]/50'
 
+  // Máximo 3 badges para não sobrecarregar a célula
+  const visibleTournaments = tournamentIds.slice(0, 3)
+
   return (
     <button
       onClick={onClick}
@@ -49,29 +55,41 @@ export function CalendarDay({
     >
       <span className={numberClass}>{dayNumber}</span>
 
-      {matchCount > 0 && (
-        <div className="flex items-center gap-0.5 mt-1">
-          {matchCount <= 4 ? (
-            Array.from({ length: Math.min(matchCount, 4) }).map((_, i) => (
-              <span
-                key={i}
-                className={`block w-1 h-1 rounded-full ${
-                  isSelected ? 'bg-[#FFD700]' : 'bg-[#F4843D]'
-                }`}
-                aria-hidden
+      {visibleTournaments.length > 0 && (
+        <div className="flex flex-col items-center gap-[2px] mt-1 w-full px-1">
+          {visibleTournaments.map(tid => {
+            const colors = getTournamentBadgeColors(tid)
+            if (!colors) return null
+            return (
+              <TournamentBadge
+                key={tid}
+                tournamentColor={colors.tournamentColor}
+                genderColor={colors.genderColor}
+                faded={isSelected}
               />
-            ))
-          ) : (
-            <span
-              className={`text-[9px] font-bold leading-none px-1 rounded ${
-                isSelected ? 'text-[#FFD700]' : 'text-[#F4843D]'
-              }`}
-            >
-              {matchCount}
-            </span>
-          )}
+            )
+          })}
         </div>
       )}
     </button>
+  )
+}
+
+interface TournamentBadgeProps {
+  tournamentColor: string
+  genderColor: string
+  faded: boolean
+}
+
+function TournamentBadge({ tournamentColor, genderColor, faded }: TournamentBadgeProps) {
+  return (
+    <span
+      className="flex w-full rounded-full overflow-hidden"
+      style={{ height: '4px', opacity: faded ? 0.7 : 1 }}
+      aria-hidden
+    >
+      <span className="flex-1" style={{ background: tournamentColor }} />
+      <span className="flex-1" style={{ background: genderColor }} />
+    </span>
   )
 }

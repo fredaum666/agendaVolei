@@ -22,7 +22,7 @@ function CalendarApp() {
   } = useCalendarContext()
 
   const { leagues, isLoading: leaguesLoading } = useLeagues()
-  const { matchCountsByDay, isLoading: gamesLoading, error, getGamesForDay } = useGames(
+  const { matchCountsByDay, tournamentsByDay, isLoading: gamesLoading, error, getGamesForDay } = useGames(
     currentMonth,
     selectedLeagueId
   )
@@ -64,6 +64,7 @@ function CalendarApp() {
             currentMonth={currentMonth}
             selectedDay={selectedDay}
             matchCountsByDay={matchCountsByDay}
+            tournamentsByDay={tournamentsByDay}
             onDaySelect={selectDay}
           />
 
