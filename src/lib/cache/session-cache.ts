@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'av3' // Incrementar para invalidar caches antigos
+const CACHE_VERSION = 'av4' // Incrementar para invalidar caches antigos
 
 export function buildCacheKey(
   type: 'games' | 'leagues' | 'sofagames',

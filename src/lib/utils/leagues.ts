@@ -12,12 +12,16 @@ export const SOFA_IDS = {
   VNL_F: 11094,
   WORLD_CHAMPIONSHIP_M: 33,
   WORLD_CHAMPIONSHIP_F: 34,
-  PAN_AMERICAN_CUP_M: 327,
-  PAN_AMERICAN_CUP_F: 328,
+  PAN_AMERICAN_CUP_M: 28473,
+  PAN_AMERICAN_CUP_F: 28378,
   OLYMPIC_GAMES_M: 41,
   OLYMPIC_GAMES_F: 42,
   CLUB_WORLD_M: 307,
   CLUB_WORLD_F: 308,
+  CHAMPIONS_LEAGUE_M: 586,
+  CHAMPIONS_LEAGUE_F: 587,
+  SOUTH_AMERICAN_CLUBS_M: 21983,
+  SOUTH_AMERICAN_CLUBS_F: 21984,
 } as const
 
 export const TRACKED_SOFA_IDS: ReadonlySet<number> = new Set(Object.values(SOFA_IDS))
@@ -164,6 +168,38 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     category: 'internacional',
     seasonMonths: 'nov – dez',
     color: '#455A64', // cinza azulado escuro Mundial Clubes
+    gender: 'F',
+  },
+  [SOFA_IDS.CHAMPIONS_LEAGUE_M]: {
+    displayName: 'Champions League Masc.',
+    shortName: 'Champions League Masc.',
+    category: 'internacional',
+    seasonMonths: 'out – mai',
+    color: '#0D1B6E', // azul escuro Champions League
+    gender: 'M',
+  },
+  [SOFA_IDS.CHAMPIONS_LEAGUE_F]: {
+    displayName: 'Champions League Femn.',
+    shortName: 'Champions League Femn.',
+    category: 'internacional',
+    seasonMonths: 'out – mai',
+    color: '#0D1B6E', // azul escuro Champions League
+    gender: 'F',
+  },
+  [SOFA_IDS.SOUTH_AMERICAN_CLUBS_M]: {
+    displayName: 'Sul-Americano de Clubes Masc.',
+    shortName: 'Sul-Am. Clubes Masc.',
+    category: 'internacional',
+    seasonMonths: 'jan – mar',
+    color: '#006847', // verde sul-americano
+    gender: 'M',
+  },
+  [SOFA_IDS.SOUTH_AMERICAN_CLUBS_F]: {
+    displayName: 'Sul-Americano de Clubes Femn.',
+    shortName: 'Sul-Am. Clubes Femn.',
+    category: 'internacional',
+    seasonMonths: 'jan – fev',
+    color: '#006847', // verde sul-americano
     gender: 'F',
   },
 }
