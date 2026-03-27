@@ -1,9 +1,7 @@
 name: Fetch Games Data
 
 on:
-  schedule:
-    - cron: '0 * * * *'  # toda hora
-  workflow_dispatch:       # permite rodar manualmente
+  workflow_dispatch:       # rodar manualmente
 
 permissions:
   contents: write
