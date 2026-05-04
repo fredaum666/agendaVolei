@@ -10,16 +10,37 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { execFileSync } from 'child_process'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const DATA_DIR = join(ROOT, 'public', 'data')
 const LOGOS_DIR = join(ROOT, 'public', 'logos')
 
-const HEADERS = {
-  'Accept': 'application/json',
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-  'Referer': 'https://www.sofascore.com/',
+// Node.js fetch is blocked by SofaScore's bot protection (TLS fingerprinting).
+// curl uses a different TLS stack that passes through. Use execFileSync to avoid
+// shell escaping issues with parentheses in User-Agent strings.
+const CURL_BASE_ARGS = [
+  '-s', '--max-time', '15',
+  '-H', 'Accept: application/json, text/plain, */*',
+  '-H', 'Accept-Language: pt-BR,pt;q=0.9',
+  '-H', 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124"',
+  '-H', 'sec-ch-ua-mobile: ?0',
+  '-H', 'Sec-Fetch-Dest: empty',
+  '-H', 'Sec-Fetch-Mode: cors',
+  '-H', 'Sec-Fetch-Site: same-origin',
+  '-H', 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  '-H', 'Referer: https://www.sofascore.com/',
+  '-H', 'Origin: https://www.sofascore.com',
+]
+
+function curlGet(url) {
+  try {
+    const out = execFileSync('curl', [...CURL_BASE_ARGS, url], { encoding: 'utf8' })
+    return JSON.parse(out)
+  } catch {
+    return null
+  }
 }
 
 // uniqueTournament IDs do SofaScore que nos interessam
@@ -56,16 +77,14 @@ function monthKey(date) {
 
 async function fetchDay(dateString) {
   const url = `https://www.sofascore.com/api/v1/sport/volleyball/scheduled-events/${dateString}`
-  const res = await fetch(url, { headers: HEADERS })
+  const data = curlGet(url)
 
-  if (!res.ok) {
-    console.warn(`  [${dateString}] HTTP ${res.status} — skipping`)
+  if (!data) {
+    console.warn(`  [${dateString}] failed — skipping`)
     return null // null = blocked, not just empty
   }
 
-  const data = await res.json()
   const events = data.events ?? []
-
   return events.filter(e => TRACKED_IDS.has(e.tournament?.uniqueTournament?.id))
 }
 
@@ -75,10 +94,7 @@ async function downloadLogo(teamId) {
 
   const url = `https://api.sofascore.com/api/v1/team/${teamId}/image`
   try {
-    const res = await fetch(url, { headers: HEADERS })
-    if (!res.ok) return
-    const buffer = await res.arrayBuffer()
-    writeFileSync(outPath, Buffer.from(buffer))
+    execFileSync('curl', ['-s', '--max-time', '10', '-o', outPath, url])
   } catch {
     // ignora falhas de logo
   }
