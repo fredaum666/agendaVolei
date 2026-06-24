@@ -20,7 +20,7 @@ node scripts/fetch-games.mjs  # buscar dados do SofaScore localmente
 ## Arquitetura de Dados
 
 ### Produção (estática)
-1. GitHub Actions roda `scripts/fetch-games.mjs` a cada hora
+1. Workflow `fetch-data.yml` roda manualmente via GitHub Actions (`workflow_dispatch`)
 2. Script busca dados do SofaScore: 30 dias passados + 60 dias futuros
 3. Salva em `public/data/games-YYYY-MM.json` (um arquivo por mês)
 4. Baixa logos dos times em `public/logos/{teamId}.png`
@@ -41,6 +41,28 @@ GitHub Actions → SofaScore API → public/data/*.json
                                sessionStorage cache (1h TTL)
                                          ↓
                                filteredGames (client-side, zero requests)
+```
+
+## SofaScore API — Notas Importantes
+
+### Endpoint correto (por torneio)
+O endpoint global `/api/v1/sport/volleyball/scheduled-events/{date}` retorna **403**. Usar o endpoint por torneio:
+
+```
+GET https://www.sofascore.com/api/v1/unique-tournament/{id}/scheduled-events/{date}
+```
+
+**Header obrigatório:** `x-requested-with: 1fcf55` (token embutido no JS do SofaScore — se começar a dar 403, o token mudou e precisa ser atualizado via DevTools/Network).
+
+### Script local bloqueado
+O `fetch-games.mjs` pode ser bloqueado localmente (403 em todos os dias). Nesse caso, disparar o workflow manualmente no GitHub Actions — IPs do GitHub não são bloqueados.
+
+Para buscar dados localmente quando o script está bloqueado, usar Playwright (browser real com cookies do SofaScore):
+```js
+// No contexto de sofascore.com/volleyball:
+fetch('/api/v1/unique-tournament/{id}/scheduled-events/{date}', {
+  headers: { 'x-requested-with': '1fcf55', 'referer': 'https://www.sofascore.com/pt/volleyball' }
+})
 ```
 
 ## Regra de Cache (sessionStorage)
@@ -79,26 +101,46 @@ TTL atual: 1 hora para jogos (`sofagames`), 24 horas para ligas (`leagues`).
 | VNL_M | 11093 | Liga das Nações Masc. | internacional | jun–ago |
 | VNL_F | 11094 | Liga das Nações Femn. | internacional | jun–ago |
 | WORLD_CHAMPIONSHIP_M | 33 | Campeonato Mundial Masc. | internacional | a cada 4 anos |
-| WORLD_CHAMPIONSHIP_F | 34 | Campeonato Mundial Femn. | internacional | a cada 4 anos |
-| PAN_AMERICAN_CUP_M | 327 | Copa Pan-Americana Masc. | internacional | jun–jul |
-| PAN_AMERICAN_CUP_F | 328 | Copa Pan-Americana Femn. | internacional | jun–jul |
-| OLYMPIC_GAMES_M | 41 | Jogos Olímpicos Masc. | internacional | a cada 4 anos |
-| OLYMPIC_GAMES_F | 42 | Jogos Olímpicos Femn. | internacional | a cada 4 anos |
-| CLUB_WORLD_M | 307 | Mundial de Clubes Masc. | internacional | nov–dez |
-| CLUB_WORLD_F | 308 | Mundial de Clubes Femn. | internacional | nov–dez |
+| WORLD_CHAMPIONSHIP_F | 32 | Campeonato Mundial Femn. | internacional | a cada 4 anos |
+| PAN_AMERICAN_CUP_M | 28473 | Copa Pan-Americana Masc. | internacional | jun–jul |
+| PAN_AMERICAN_CUP_F | 28378 | Copa Pan-Americana Femn. | internacional | jun–jul |
+| CLUB_WORLD_M | 859 | Mundial de Clubes Masc. | internacional | nov–dez |
+| CLUB_WORLD_F | 860 | Mundial de Clubes Femn. | internacional | nov–dez |
+| CHAMPIONS_LEAGUE_M | 586 | Champions League Masc. | internacional | out–mai |
+| CHAMPIONS_LEAGUE_F | 587 | Champions League Femn. | internacional | out–mai |
+| SOUTH_AMERICAN_CLUBS_M | 21983 | Sul-Americano de Clubes Masc. | internacional | out–nov |
+| SOUTH_AMERICAN_CLUBS_F | 21984 | Sul-Americano de Clubes Femn. | internacional | out–nov |
+
+> **Olímpicos removidos:** IDs 41 e 42 eram torneios de futebol (Veikkausliiga e Regionalliga Nord). Os Olímpicos de vôlei não têm IDs fixos úteis no SofaScore fora do ciclo olímpico.
+
+> **IDs corrigidos:** 34→32 (Mundial Femn.), 307→859 (Mundial Clubes Masc.), 308→860 (Mundial Clubes Femn.) — os IDs antigos apontavam para ligas de futebol.
 
 ### Para adicionar uma nova liga:
-1. Descobrir o `uniqueTournament.id` no SofaScore (buscar em `https://www.sofascore.com/api/v1/category/373/unique-tournaments` para ligas brasileiras)
-2. Adicionar em `SOFA_IDS` e `SOFA_TOURNAMENT_CONFIG` em `src/lib/utils/leagues.ts`
-3. Adicionar o mesmo ID em `TRACKED_IDS` em `scripts/fetch-games.mjs`
-4. Se for torneio de seleções nacionais (não clubes), adicionar em `NATIONAL_TEAM_TOURNAMENT_IDS`
-5. Bumpar `CACHE_VERSION` em `src/lib/cache/session-cache.ts`
-6. Rodar `node scripts/fetch-games.mjs` para buscar os dados imediatamente
-7. Commitar `src/`, `scripts/`, `public/data/`, `public/logos/`
+1. Descobrir o `uniqueTournament.id` via `https://www.sofascore.com/api/v1/search/unique-tournaments?q={nome}&sport=volleyball`
+2. Confirmar que o ID é de vôlei: `GET /api/v1/unique-tournament/{id}` → verificar `category.sport.name === 'Volleyball'`
+3. Adicionar em `SOFA_IDS` e `SOFA_TOURNAMENT_CONFIG` em `src/lib/utils/leagues.ts`
+4. Adicionar o mesmo ID em `TRACKED_IDS` em `scripts/fetch-games.mjs`
+5. Se for torneio de seleções nacionais (não clubes), adicionar em `NATIONAL_TEAM_TOURNAMENT_IDS`
+6. Bumpar `CACHE_VERSION` em `src/lib/cache/session-cache.ts`
+7. Rodar `node scripts/fetch-games.mjs` para buscar os dados imediatamente
+8. Commitar `src/`, `scripts/`, `public/data/`, `public/logos/`
+
+## Botão de Atualizar Dados
+
+O header tem um botão ↻ ("Atualizar") que dispara o workflow `fetch-data.yml` via GitHub API.
+
+**Fluxo:** clique → modal pede senha → senha correta → POST para GitHub API → workflow roda.
+
+**Token GitHub:** `VITE_GITHUB_TOKEN` no `.env` (não commitado) + secret `VITE_GITHUB_TOKEN` no repositório GitHub para o workflow de deploy embuti-lo no bundle.
+
+**Arquivos:**
+- `src/hooks/useWorkflowDispatch.ts` — lógica da chamada à API
+- `src/components/ui/RefreshButton.tsx` — UI do botão e modal
 
 ## Variáveis de Ambiente
 
 - `import.meta.env.BASE_URL` → `/` (dev) ou `/agendaVolei/` (prod) — usar para caminhos de assets
+- `VITE_GITHUB_TOKEN` — token GitHub com Actions: Write, embutido no bundle pelo Vite
 - `VITE_PROXY_URL` — secret opcional no GitHub Actions, não obrigatório
 - `VITE_API_SPORTS_KEY` — chave da API-Sports, atualmente não usada no app
 
@@ -114,13 +156,14 @@ TTL atual: 1 hora para jogos (`sofagames`), 24 horas para ligas (`leagues`).
 | Arquivo | Função |
 |---|---|
 | `src/lib/utils/leagues.ts` | IDs das ligas + config visual + meses de temporada |
-| `src/lib/sofascore/client.ts` | Fetch de dados (dev: proxy, prod: JSON estático) |
+| `src/lib/sofascore/client.ts` | Fetch de dados (dev: proxy, prod: JSON estático); 404 retorna array vazio |
 | `src/lib/sofascore/transforms.ts` | SofaEvent → Match |
 | `src/lib/cache/session-cache.ts` | Cache sessionStorage com TTL |
 | `src/hooks/useGames.ts` | Orquestra fetch + cache + filtro |
+| `src/hooks/useWorkflowDispatch.ts` | Disparo do workflow via GitHub API |
 | `src/contexts/CalendarContext.tsx` | Estado global (mês, dia, liga selecionada) |
 | `scripts/fetch-games.mjs` | Script GitHub Actions de busca de dados |
-| `.github/workflows/fetch-data.yml` | Cron hourly de busca |
+| `.github/workflows/fetch-data.yml` | Workflow manual de busca (workflow_dispatch) |
 | `.github/workflows/deploy.yml` | Deploy para GitHub Pages |
 
 ## Design Visual
@@ -143,7 +186,8 @@ O app é uma PWA instalável. Configurado em `vite.config.ts` via `VitePWA`:
 
 ## Observações
 
-- O SofaScore pode bloquear IPs do GitHub Actions. O script tem proteção anti-wipe: se >50% dos dias retornar erro, ele não sobrescreve o arquivo existente.
+- O SofaScore bloqueia IPs locais com 403 no script. GitHub Actions funciona normalmente.
+- O endpoint global de vôlei (`/sport/volleyball/scheduled-events/{date}`) está bloqueado — usar endpoint por torneio com header `x-requested-with: 1fcf55`.
 - Logos de times são baixadas server-side pelo script e servidas localmente (sem CORS).
 - Filtro de liga é 100% client-side (zero requests adicionais ao trocar competição).
-- Categorias `estadual` e `internacional` existem no código mas com poucos jogos ativos no momento.
+- Fetch em produção retorna array vazio (não erro) em caso de 404 — meses sem dados mostram "sem jogos".
