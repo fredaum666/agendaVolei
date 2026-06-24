@@ -16,6 +16,7 @@ const COUNTRY_NAME_TO_CODE: Record<string, string> = {
   'Serbia': 'rs',
   'Sérvia': 'rs',
   'Turkey': 'tr',
+  'Türkiye': 'tr',
   'Turquia': 'tr',
   'Russia': 'ru',
   'Rússia': 'ru',

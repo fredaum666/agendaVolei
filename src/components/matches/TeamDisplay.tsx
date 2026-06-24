@@ -19,7 +19,7 @@ export function TeamDisplay({ team, leagueId, align }: TeamDisplayProps) {
     <div className={`flex items-center gap-2 min-w-0 ${flexDir}`}>
       {isNational ? (
         <Flag
-          countryCodeOrName={team.country?.name ?? team.name}
+          countryCodeOrName={team.country?.code ?? team.country?.name ?? team.name}
           size="md"
           alt={`Bandeira de ${team.name}`}
           className="flex-shrink-0"
