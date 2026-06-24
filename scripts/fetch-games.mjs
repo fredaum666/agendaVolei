@@ -20,7 +20,7 @@ const LOGOS_DIR = join(ROOT, 'public', 'logos')
 // Node.js fetch is blocked by SofaScore's bot protection (TLS fingerprinting).
 // curl uses a different TLS stack that bypasses it.
 const CURL_ARGS = [
-  '-s', '--max-time', '15',
+  '-s', '--fail', '--max-time', '15',
   '-H', 'Accept: application/json, text/plain, */*',
   '-H', 'Accept-Language: pt-BR,pt;q=0.9',
   '-H', 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124"',
