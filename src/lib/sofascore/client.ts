@@ -17,6 +17,7 @@ export async function fetchEventsForMonth(year: number, month: number): Promise<
   const url = `${base}data/games-${monthKey}.json`
 
   const res = await fetch(url)
+  if (res.status === 404) return []
   if (!res.ok) {
     throw new Error(`Dados não disponíveis para ${monthKey} (HTTP ${res.status})`)
   }

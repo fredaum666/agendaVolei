@@ -19,7 +19,9 @@ const LOGOS_DIR = join(ROOT, 'public', 'logos')
 const HEADERS = {
   'Accept': 'application/json',
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-  'Referer': 'https://www.sofascore.com/',
+  'Referer': 'https://www.sofascore.com/volleyball',
+  // Token embedded in SofaScore's JS bundle — required to avoid 403 on per-tournament endpoints
+  'x-requested-with': '1fcf55',
 }
 
 // uniqueTournament IDs do SofaScore que nos interessam
@@ -55,18 +57,36 @@ function monthKey(date) {
 }
 
 async function fetchDay(dateString) {
-  const url = `https://www.sofascore.com/api/v1/sport/volleyball/scheduled-events/${dateString}`
-  const res = await fetch(url, { headers: HEADERS })
+  const ids = [...TRACKED_IDS]
+  const allEvents = []
+  let blockedCount = 0
 
-  if (!res.ok) {
-    console.warn(`  [${dateString}] HTTP ${res.status} — skipping`)
-    return null // null = blocked, not just empty
+  // Fetch per-tournament — the all-sports endpoint is blocked (403)
+  const CHUNK = 5
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    const chunk = ids.slice(i, i + CHUNK)
+    const results = await Promise.allSettled(
+      chunk.map(id => {
+        const url = `https://www.sofascore.com/api/v1/unique-tournament/${id}/scheduled-events/${dateString}`
+        return fetch(url, { headers: HEADERS }).then(r => {
+          if (!r.ok) { if (r.status === 403) blockedCount++; return { events: [] } }
+          return r.json()
+        })
+      })
+    )
+    for (const r of results) {
+      if (r.status === 'fulfilled') allEvents.push(...(r.value.events ?? []))
+    }
+    if (i + CHUNK < ids.length) await new Promise(r => setTimeout(r, 150))
   }
 
-  const data = await res.json()
-  const events = data.events ?? []
+  // If all tournaments were blocked, signal as null (triggers anti-wipe protection)
+  if (blockedCount === ids.length) {
+    console.warn(`  [${dateString}] all requests blocked — skipping`)
+    return null
+  }
 
-  return events.filter(e => TRACKED_IDS.has(e.tournament?.uniqueTournament?.id))
+  return allEvents
 }
 
 async function downloadLogo(teamId) {
