@@ -11,13 +11,11 @@ export const SOFA_IDS = {
   VNL_M: 11093,
   VNL_F: 11094,
   WORLD_CHAMPIONSHIP_M: 33,
-  WORLD_CHAMPIONSHIP_F: 34,
+  WORLD_CHAMPIONSHIP_F: 32,
   PAN_AMERICAN_CUP_M: 28473,
   PAN_AMERICAN_CUP_F: 28378,
-  OLYMPIC_GAMES_M: 41,
-  OLYMPIC_GAMES_F: 42,
-  CLUB_WORLD_M: 307,
-  CLUB_WORLD_F: 308,
+  CLUB_WORLD_M: 859,
+  CLUB_WORLD_F: 860,
   CHAMPIONS_LEAGUE_M: 586,
   CHAMPIONS_LEAGUE_F: 587,
   SOUTH_AMERICAN_CLUBS_M: 21983,
@@ -138,22 +136,6 @@ export const SOFA_TOURNAMENT_CONFIG: Record<number, TournamentConfig> = {
     color: '#00A3E0', // azul claro Pan-Am
     gender: 'F',
   },
-  [SOFA_IDS.OLYMPIC_GAMES_M]: {
-    displayName: 'Jogos Olímpicos Masc.',
-    shortName: 'Jogos Olímpicos Masc.',
-    category: 'internacional',
-    seasonMonths: 'a cada 4 anos',
-    color: '#C8961A', // dourado olímpico
-    gender: 'M',
-  },
-  [SOFA_IDS.OLYMPIC_GAMES_F]: {
-    displayName: 'Jogos Olímpicos Femn.',
-    shortName: 'Jogos Olímpicos Femn.',
-    category: 'internacional',
-    seasonMonths: 'a cada 4 anos',
-    color: '#C8961A', // dourado olímpico
-    gender: 'F',
-  },
   [SOFA_IDS.CLUB_WORLD_M]: {
     displayName: 'Mundial de Clubes Masc.',
     shortName: 'Mundial de Clubes Masc.',
@@ -241,8 +223,6 @@ export const NATIONAL_TEAM_TOURNAMENT_IDS: ReadonlySet<number> = new Set<number>
   SOFA_IDS.WORLD_CHAMPIONSHIP_F,
   SOFA_IDS.PAN_AMERICAN_CUP_M,
   SOFA_IDS.PAN_AMERICAN_CUP_F,
-  SOFA_IDS.OLYMPIC_GAMES_M,
-  SOFA_IDS.OLYMPIC_GAMES_F,
 ])
 
 export function isNationalTeamLeague(leagueId: number): boolean {

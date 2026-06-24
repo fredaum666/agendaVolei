@@ -35,13 +35,11 @@ const TRACKED_IDS = new Set([
   11093, // VNL Masc.
   11094, // VNL Femn.
   33,    // Mundial Masc.
-  34,    // Mundial Femn.
+  32,    // Mundial Femn. (corrigido de 34)
   28473, // Copa Pan-Americana Masc. (corrigido de 327)
   28378, // Copa Pan-Americana Femn. (corrigido de 328)
-  41,    // Olímpicos Masc.
-  42,    // Olímpicos Femn.
-  307,   // Mundial Clubes Masc.
-  308,   // Mundial Clubes Femn.
+  859,   // Mundial Clubes Masc. (corrigido de 307)
+  860,   // Mundial Clubes Femn. (corrigido de 308)
   586,   // Champions League Masc.
   587,   // Champions League Femn.
   21983, // Sul-Americano de Clubes Masc.
