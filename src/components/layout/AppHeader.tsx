@@ -1,3 +1,5 @@
+import { RefreshButton } from '@/components/ui/RefreshButton'
+
 export function AppHeader() {
   return (
     <header className="bg-[#1A3A5C] shadow-lg sticky top-0 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
@@ -16,6 +18,7 @@ export function AppHeader() {
             Calendário de jogos
           </p>
         </div>
+        <RefreshButton />
       </div>
     </header>
   )
